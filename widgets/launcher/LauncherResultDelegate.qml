@@ -64,6 +64,41 @@ Item {
         horizontalAlignment: Text.AlignHCenter
     }
 
+    Rectangle {
+        id: colorSchemeIcon
+
+        anchors {
+            left: parent.left
+            verticalCenter: parent.verticalCenter
+            leftMargin: 20
+        }
+
+        width: 22
+        height: 22
+        radius: width / 2
+        visible: SettingsService.launcherShowIcons
+            && root.result.type === "colorScheme"
+        color: root.result.themeId === "gruvbox"
+            ? Theme.gruvbox.accentColor : Theme.catppuccin.accentColor
+        border.color: Theme.surfaceBorderColor
+        border.width: 1
+
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 1
+            radius: width / 2
+            visible: root.result.themeId === "dynamic"
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: "#f2a7c3" }
+                GradientStop { position: 0.25; color: "#f7c89b" }
+                GradientStop { position: 0.5; color: "#a8dfc4" }
+                GradientStop { position: 0.75; color: "#9fc9ee" }
+                GradientStop { position: 1.0; color: "#c5afe8" }
+            }
+        }
+    }
+
     Column {
         anchors {
             left: parent.left
@@ -71,7 +106,8 @@ Item {
             verticalCenter: parent.verticalCenter
             leftMargin: SettingsService.launcherShowIcons
                 && (root.result.type === "application"
-                    || root.result.type === "command") ? 62 : 12
+                    || root.result.type === "command"
+                    || root.result.type === "colorScheme") ? 62 : 12
             rightMargin: 12
         }
         spacing: SettingsService.launcherShowDescriptions ? 1 : 0

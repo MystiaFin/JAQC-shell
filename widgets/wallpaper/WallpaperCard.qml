@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Widgets
 import "../../components/theme"
+import "../../services"
 
 Item {
     id: root
@@ -22,11 +23,12 @@ Item {
         Image {
             anchors.fill: parent
             source: root.source
+            sourceSize: WallpaperService.pickerThumbnailSize
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
             cache: true
             smooth: true
-            mipmap: true
+            mipmap: false
         }
 
         Rectangle {

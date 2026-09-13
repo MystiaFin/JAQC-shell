@@ -19,6 +19,7 @@ Singleton {
             : wallpaperDirectoryPath
     readonly property url directory: localFileUrl(wallpaperDirectoryPath)
     readonly property url defaultSource: directory + "/wallpaper_2.jpg"
+    readonly property size pickerThumbnailSize: Qt.size(720, 480)
 
     property url source: {
         const savedSource = selectionFile.text().trim();
@@ -81,6 +82,25 @@ Singleton {
         showDirs: false
         showDotAndDotDot: false
         sortField: FolderListModel.Name
+    }
+
+    Item {
+        width: 0
+        height: 0
+
+        Repeater {
+            model: wallpaperModel
+
+            delegate: Image {
+                required property url fileUrl
+
+                source: fileUrl
+                sourceSize: root.pickerThumbnailSize
+                asynchronous: true
+                cache: true
+                mipmap: false
+            }
+        }
     }
 
     Timer {
