@@ -12,7 +12,7 @@
 
 ## Preview
 
-https://github.com/user-attachments/assets/7d3009c8-16a1-4e49-a7e0-bc08de7df022
+https://github.com/user-attachments/assets/49df087e-79db-4acb-8bdd-ff71a1be1aee
 
 ## Overview
 
