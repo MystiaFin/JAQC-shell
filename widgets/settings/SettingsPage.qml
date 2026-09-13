@@ -10,7 +10,7 @@ Item {
     required property bool shown
     required property int requestSerial
 
-    property string section: "appearance"
+    property string section: "userinfo"
     property string pendingIntegration: ""
     property string pendingTitle: ""
     property string pendingWarning: ""
@@ -18,6 +18,7 @@ Item {
 
     readonly property var sectionMeta: ({
         appearance: { title: "Appearance", description: "Tune the shell's surfaces, scale, blur, and roundedness." },
+        userinfo: { title: "User info", description: "Choose the name and profile picture shown on the lock screen." },
         colors: { title: "Colors", description: "Control palette selection and how dynamic wallpaper colors are generated." },
         launcher: { title: "Launcher", description: "Configure search results, command mode, and launcher presentation." },
         wallpaper: { title: "Wallpaper", description: "Choose the source directory, transitions, shuffle, and palette behavior." },
@@ -36,6 +37,7 @@ Item {
     function pageSource(sectionKey): url {
         switch (sectionKey) {
         case "appearance": return Qt.resolvedUrl("pages/AppearanceSettings.qml");
+        case "userinfo": return Qt.resolvedUrl("pages/UserInfoSettings.qml");
         case "colors": return Qt.resolvedUrl("pages/ColorsSettings.qml");
         case "launcher": return Qt.resolvedUrl("pages/LauncherSettings.qml");
         case "wallpaper": return Qt.resolvedUrl("pages/WallpaperSettings.qml");
@@ -58,8 +60,13 @@ Item {
     function confirmIntegration(): void {
         if (!pendingIntegration)
             return;
-        SettingsService.setValue(pendingIntegration + "Integration", true);
+        SettingsService.setDraftValue(pendingIntegration + "Integration", true);
         pendingIntegration = "";
+    }
+
+    function closeSettings(): void {
+        SettingsService.discardDraft();
+        OverlayState.hideSettings();
     }
 
     Rectangle { anchors.fill: parent; color: Theme.shellBackgroundColor }
@@ -74,7 +81,7 @@ Item {
             else if (root.pendingReset)
                 root.pendingReset = false;
             else
-                OverlayState.hideSettings();
+                root.closeSettings();
         }
     }
 
@@ -116,7 +123,7 @@ Item {
                 color: "transparent"
                 Text { anchors.centerIn: parent; text: Icons.close; color: Theme.secondaryTextColor; font.family: Typography.nerdIconFontFamily; font.pixelSize: 18 }
                 HoverHandler { cursorShape: Qt.PointingHandCursor }
-                TapHandler { onTapped: OverlayState.hideSettings() }
+                TapHandler { onTapped: root.closeSettings() }
             }
         }
 
@@ -145,7 +152,14 @@ Item {
 
             Flickable {
                 id: scroller
-                anchors { top: sectionHeader.bottom; left: parent.left; right: parent.right; bottom: parent.bottom; topMargin: 16 }
+                anchors {
+                    top: sectionHeader.bottom
+                    left: parent.left
+                    right: parent.right
+                    bottom: applyFooter.top
+                    topMargin: 16
+                    bottomMargin: 10
+                }
                 contentHeight: sectionLoader.item ? sectionLoader.item.implicitHeight : 0
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
@@ -155,6 +169,41 @@ Item {
                     width: scroller.width
                     height: item ? item.implicitHeight : 0
                     source: root.pageSource(root.section)
+                }
+            }
+
+            Item {
+                id: applyFooter
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: 50
+
+                Text {
+                    anchors {
+                        right: applyButton.left
+                        rightMargin: 12
+                        verticalCenter: applyButton.verticalCenter
+                    }
+                    visible: SettingsService.draftDirty
+                    text: "Unsaved changes"
+                    color: Theme.mutedTextColor
+                    font.family: Typography.bodyFontFamily
+                    font.pixelSize: 11
+                }
+
+                SettingsActionButton {
+                    id: applyButton
+                    anchors {
+                        right: parent.right
+                        bottom: parent.bottom
+                    }
+                    label: "Apply"
+                    primary: true
+                    enabled: SettingsService.draftDirty
+                    onClicked: SettingsService.applyDraft()
                 }
             }
         }
@@ -199,11 +248,11 @@ Item {
                     Text { anchors.verticalCenter: parent.verticalCenter; width: parent.width - 50; text: "Enable " + root.pendingTitle + " integration?"; color: Theme.primaryTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 17; font.weight: Font.Bold; wrapMode: Text.WordWrap }
                 }
                 Text { width: parent.width; text: root.pendingWarning; color: Theme.secondaryTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 11; wrapMode: Text.WordWrap; lineHeight: 1.2 }
-                Text { width: parent.width; text: "Only continue if you have reviewed and backed up the affected configuration."; color: Theme.mutedTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 10; wrapMode: Text.WordWrap }
+                Text { width: parent.width; text: "This only stages the change. The integration is enabled when you press Apply."; color: Theme.mutedTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 10; wrapMode: Text.WordWrap }
                 Row {
                     anchors.right: parent.right; spacing: 8
                     SettingsActionButton { label: "Cancel"; onClicked: root.pendingIntegration = "" }
-                    SettingsActionButton { label: "Enable"; danger: true; onClicked: root.confirmIntegration() }
+                    SettingsActionButton { label: "Continue"; danger: true; onClicked: root.confirmIntegration() }
                 }
             }
         }
@@ -228,14 +277,14 @@ Item {
                 anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter; margins: 22 }
                 spacing: 12
                 Text { width: parent.width; text: "Reset all settings?"; color: Theme.primaryTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 17; font.weight: Font.Bold }
-                Text { width: parent.width; text: "This restores every setting managed by SettingsService to its built-in default. Your other config files are not deleted."; color: Theme.secondaryTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 11; wrapMode: Text.WordWrap }
+                Text { width: parent.width; text: "This stages every setting at its built-in default. Nothing changes until you press Apply. Your other config files are not deleted."; color: Theme.secondaryTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 11; wrapMode: Text.WordWrap }
                 Row {
                     anchors.right: parent.right; spacing: 8
                     SettingsActionButton { label: "Cancel"; onClicked: root.pendingReset = false }
                     SettingsActionButton {
                         label: "Reset"; danger: true
                         onClicked: {
-                            SettingsService.resetDefaults();
+                            SettingsService.resetDraftDefaults();
                             root.pendingReset = false;
                         }
                     }
@@ -244,6 +293,20 @@ Item {
         }
     }
 
-    onRequestSerialChanged: if (shown) Qt.callLater(() => keyHandler.forceActiveFocus())
-    onShownChanged: if (shown) Qt.callLater(() => keyHandler.forceActiveFocus())
+    onRequestSerialChanged: if (shown)
+        Qt.callLater(() => keyHandler.forceActiveFocus())
+
+    onShownChanged: {
+        if (shown) {
+            SettingsService.beginDraft();
+            Qt.callLater(() => keyHandler.forceActiveFocus());
+        } else {
+            SettingsService.discardDraft();
+        }
+    }
+
+    Component.onCompleted: {
+        if (shown)
+            SettingsService.beginDraft();
+    }
 }

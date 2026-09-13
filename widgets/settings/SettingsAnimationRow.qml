@@ -58,12 +58,12 @@ Item {
 
         SettingsSmallButton {
             width: 96
-            label: SettingsService[root.styleKey]
+            label: SettingsService.draftValue(root.styleKey)
             emphasized: true
             onClicked: {
                 const styles = ["off", "fade", "spatial", "spring"];
-                const current = styles.indexOf(SettingsService[root.styleKey]);
-                SettingsService.setValue(
+                const current = styles.indexOf(SettingsService.draftValue(root.styleKey));
+                SettingsService.setDraftValue(
                     root.styleKey,
                     styles[(current + 1) % styles.length]);
             }
@@ -85,15 +85,15 @@ Item {
                 height: 36
                 label: "−"
                 transparent: true
-                onClicked: SettingsService.setValue(
+                onClicked: SettingsService.setDraftValue(
                     root.durationKey,
-                    Math.max(0, SettingsService[root.durationKey] - 50))
+                    Math.max(0, SettingsService.draftValue(root.durationKey) - 50))
             }
 
             Text {
                 anchors.centerIn: parent
                 width: 78
-                text: SettingsService[root.durationKey] + " ms"
+                text: SettingsService.draftValue(root.durationKey) + " ms"
                 color: Theme.secondaryTextColor
                 font.family: Typography.bodyFontFamily
                 font.pixelSize: 12
@@ -110,9 +110,9 @@ Item {
                 height: 36
                 label: "+"
                 transparent: true
-                onClicked: SettingsService.setValue(
+                onClicked: SettingsService.setDraftValue(
                     root.durationKey,
-                    Math.min(5000, SettingsService[root.durationKey] + 50))
+                    Math.min(5000, SettingsService.draftValue(root.durationKey) + 50))
             }
         }
     }

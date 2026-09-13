@@ -28,6 +28,7 @@ JAQC-shell is my personal Quickshell configuration: a complete desktop shell rat
 - Wallpaper-derived dynamic color palette
 - Desktop overview and floating widgets
 - Power menu
+- PAM-authenticated Wayland lock screen
 - Built-in settings window
 - Optional theme integrations for GTK, terminals, tmux, Vesktop, Spotify, btop, and cava
 
@@ -52,7 +53,7 @@ qs
 
 ### Required
 
-- **Quickshell 0.3** with the Wayland, networking, Bluetooth, notifications, and I/O modules used by the config
+- **Quickshell 0.3** with the Wayland, PAM, networking, Bluetooth, notifications, and I/O modules used by the config
 - **Niri** with `NIRI_SOCKET` available
 - **Poppins**
 - **JetBrains Mono Nerd Font**
@@ -137,6 +138,28 @@ qs ipc call wallpaper getVisible
 
 </details>
 
+## Lock screen
+
+JAQC-shell includes a secure Wayland session lock backed by PAM. It reuses the active wallpaper and shell palette, shows a minimal clock/date view, and reveals the password UI when you begin interacting. Media playback and basic network/battery state remain available without exposing notifications.
+
+Lock it from the shell power menu or through IPC:
+
+```sh
+qs ipc call lockscreen lock
+qs ipc call lockscreen getLocked
+```
+
+For Niri, a keybind can simply run the lock command, for example:
+
+```kdl
+Mod+L { spawn-sh "qs ipc call lockscreen lock"; }
+```
+
+The lock screen authenticates the current system user through the included password-only PAM configuration (`components/windows/pam/password.conf`). The name and profile picture shown by the lock screen can be changed under **Settings → User info**; these visual settings do not change the system account used for authentication.
+
+> [!CAUTION]
+> A Wayland session lock deliberately remains secure if the locker process dies. If Quickshell crashes while the session is locked, the compositor will not reveal the desktop; recover from another TTY/session if necessary.
+
 ## Settings
 
 The shell includes its own settings window instead of requiring QML edits for normal day-to-day preferences.
@@ -144,6 +167,7 @@ The shell includes its own settings window instead of requiring QML edits for no
 Current sections include:
 
 - Appearance
+- User info
 - Colors
 - Launcher
 - Wallpaper

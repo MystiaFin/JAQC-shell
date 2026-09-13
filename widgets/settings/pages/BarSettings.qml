@@ -11,55 +11,55 @@ Column {
             width: parent.width
             title: "Position"
             detail: "Place the status bar on the top or bottom edge"
-            value: SettingsService.statusBarPosition
+            value: SettingsService.draftValue("statusBarPosition")
             options: [
                 { value: "top", label: "Top" },
                 { value: "bottom", label: "Bottom" }
             ]
             showSeparator: true
-            onValueRequested: value => SettingsService.setValue("statusBarPosition", value)
+            onValueRequested: value => SettingsService.setDraftValue("statusBarPosition", value)
         }
         SettingsSliderRow {
             width: parent.width
             title: "Height"
             detail: "Adjust status bar height without changing its content scale"
-            value: SettingsService.statusBarHeight
+            value: SettingsService.draftValue("statusBarHeight")
             minimum: 32; maximum: 64; step: 2; decimals: 0; suffix: " px"
             showSeparator: true
-            onValueRequested: value => SettingsService.setValue("statusBarHeight", value)
+            onValueRequested: value => SettingsService.setDraftValue("statusBarHeight", value)
         }
         SettingsToggleRow {
             width: parent.width
             title: "Auto-hide"
             detail: "Collapse to a thin screen-edge trigger when the pointer leaves"
-            checked: SettingsService.statusBarAutoHide
+            checked: SettingsService.draftValue("statusBarAutoHide")
             showSeparator: true
-            onToggleRequested: SettingsService.setValue("statusBarAutoHide", !checked)
+            onToggleRequested: SettingsService.setDraftValue("statusBarAutoHide", !checked)
         }
         SettingsChoiceRow {
             width: parent.width
             title: "Workspace indicator"
             detail: "Choose the workspace strip presentation"
-            value: SettingsService.workspaceIndicatorStyle
+            value: SettingsService.draftValue("workspaceIndicatorStyle")
             options: [
                 { value: "pill", label: "Pill" },
                 { value: "dots", label: "Dots" },
                 { value: "numbers", label: "Numbers" }
             ]
-            onValueRequested: value => SettingsService.setValue("workspaceIndicatorStyle", value)
+            onValueRequested: value => SettingsService.setDraftValue("workspaceIndicatorStyle", value)
         }
     }
 
     SettingsGroup {
-        SettingsToggleRow { width: parent.width; title: "NixOS logo"; detail: "Show the power-menu launcher"; checked: SettingsService.statusBarShowLogo; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowLogo", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Workspaces"; detail: "Show the workspace indicator"; checked: SettingsService.statusBarShowWorkspaces; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowWorkspaces", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Workspace name"; detail: "Show the active workspace label"; checked: SettingsService.statusBarShowWorkspaceName; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowWorkspaceName", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Audio controls"; detail: "Show output and microphone rings"; checked: SettingsService.statusBarShowAudio; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowAudio", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Media"; detail: "Show current media information"; checked: SettingsService.statusBarShowMedia; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowMedia", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Clock and date"; detail: "Show time and date in the center section"; checked: SettingsService.statusBarShowClock; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowClock", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Battery"; detail: "Show battery status"; checked: SettingsService.statusBarShowBattery; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowBattery", !checked) }
-        SettingsToggleRow { width: parent.width; title: "Memory"; detail: "Show memory usage"; checked: SettingsService.statusBarShowMemory; showSeparator: true; onToggleRequested: SettingsService.setValue("statusBarShowMemory", !checked) }
-        SettingsToggleRow { width: parent.width; title: "System tray group"; detail: "Show notifications, network, and Bluetooth shortcuts"; checked: SettingsService.statusBarShowTray; onToggleRequested: SettingsService.setValue("statusBarShowTray", !checked) }
+        SettingsToggleRow { width: parent.width; title: "NixOS logo"; detail: "Show the power-menu launcher"; checked: SettingsService.draftValue("statusBarShowLogo"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowLogo", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Workspaces"; detail: "Show the workspace indicator"; checked: SettingsService.draftValue("statusBarShowWorkspaces"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowWorkspaces", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Workspace name"; detail: "Show the active workspace label"; checked: SettingsService.draftValue("statusBarShowWorkspaceName"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowWorkspaceName", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Audio controls"; detail: "Show output and microphone rings"; checked: SettingsService.draftValue("statusBarShowAudio"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowAudio", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Media"; detail: "Show current media information"; checked: SettingsService.draftValue("statusBarShowMedia"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowMedia", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Clock and date"; detail: "Show time and date in the center section"; checked: SettingsService.draftValue("statusBarShowClock"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowClock", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Battery"; detail: "Show battery status"; checked: SettingsService.draftValue("statusBarShowBattery"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowBattery", !checked) }
+        SettingsToggleRow { width: parent.width; title: "Memory"; detail: "Show memory usage"; checked: SettingsService.draftValue("statusBarShowMemory"); showSeparator: true; onToggleRequested: SettingsService.setDraftValue("statusBarShowMemory", !checked) }
+        SettingsToggleRow { width: parent.width; title: "System tray group"; detail: "Show notifications, network, and Bluetooth shortcuts"; checked: SettingsService.draftValue("statusBarShowTray"); onToggleRequested: SettingsService.setDraftValue("statusBarShowTray", !checked) }
     }
 
     SettingsGroup {
@@ -67,16 +67,16 @@ Column {
             width: parent.width
             title: "24-hour clock"
             detail: "Use 24-hour time instead of AM/PM"
-            checked: SettingsService.clock24Hour
+            checked: SettingsService.draftValue("clock24Hour")
             showSeparator: true
-            onToggleRequested: SettingsService.setValue("clock24Hour", !checked)
+            onToggleRequested: SettingsService.setDraftValue("clock24Hour", !checked)
         }
         SettingsToggleRow {
             width: parent.width
             title: "Show seconds"
             detail: "Include seconds in the status-bar clock"
-            checked: SettingsService.clockShowSeconds
-            onToggleRequested: SettingsService.setValue("clockShowSeconds", !checked)
+            checked: SettingsService.draftValue("clockShowSeconds")
+            onToggleRequested: SettingsService.setDraftValue("clockShowSeconds", !checked)
         }
     }
 }

@@ -27,6 +27,14 @@ ShellRoot {
     Variants {
         model: Quickshell.screens
 
+        LockTransitionOverlay {}
+    }
+
+    LockScreen {}
+
+    Variants {
+        model: Quickshell.screens
+
         WallpaperLayer {}
     }
 

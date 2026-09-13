@@ -28,12 +28,12 @@ Column {
                 width: root.width
                 title: modelData.title
                 detail: modelData.detail
-                checked: SettingsService[modelData.key + "Integration"]
+                checked: SettingsService.draftValue(modelData.key + "Integration")
                 showSeparator: index < root.integrationSettings.length - 1
                 onToggleRequested: {
                     const settingKey = modelData.key + "Integration";
-                    if (SettingsService[settingKey])
-                        SettingsService.setValue(settingKey, false);
+                    if (SettingsService.draftValue(settingKey))
+                        SettingsService.setDraftValue(settingKey, false);
                     else
                         root.integrationRequested(modelData.key, modelData.title, modelData.warning);
                 }

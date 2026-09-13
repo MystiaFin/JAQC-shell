@@ -2,6 +2,7 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Effects
 import "../../components/theme"
+import "../../services"
 
 Item {
     id: root

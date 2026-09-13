@@ -53,10 +53,8 @@ Item {
             font.pixelSize: 12
             verticalAlignment: TextInput.AlignVCenter
             clip: true
-            onEditingFinished: {
-                root.valueRequested(text);
-                focus = false;
-            }
+            onTextEdited: root.valueRequested(text)
+            onEditingFinished: focus = false
         }
     }
 

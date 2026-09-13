@@ -19,6 +19,10 @@ Singleton {
         surfaceOpacity: 0.94,
         reduceTransparency: false,
 
+        // User info
+        userDisplayName: "",
+        profilePicture: "",
+
         // Colors
         theme: "dynamic",
         colorMode: "auto",
@@ -118,6 +122,14 @@ Singleton {
     property real surfaceOpacity: defaults.surfaceOpacity
     property bool reduceTransparency: defaults.reduceTransparency
 
+    // User info
+    property string userDisplayName: defaults.userDisplayName
+    property string profilePicture: defaults.profilePicture
+    readonly property string systemUserName: Quickshell.env("USER") || "User"
+    readonly property string effectiveDisplayName: userDisplayName.trim().length > 0
+        ? userDisplayName.trim() : systemUserName
+    readonly property string profilePictureSource: resolveProfilePicture(profilePicture)
+
     // Colors
     property string theme: defaults.theme
     property string colorMode: defaults.colorMode
@@ -211,6 +223,126 @@ Singleton {
 
     property bool loading: true
 
+    // Settings UI edit session. Values in draftValues are intentionally kept
+    // separate from the live properties above so the rest of the shell only
+    // reacts after the user explicitly presses Apply.
+    property bool draftActive: false
+    property var draftValues: ({})
+    property var draftOriginalValues: ({})
+    property bool draftDirty: false
+    property int draftRevision: 0
+
+    function cloneValues(source): var {
+        const copy = {};
+        if (!source)
+            return copy;
+        const keys = Object.keys(source);
+        for (const key of keys)
+            copy[key] = source[key];
+        return copy;
+    }
+
+    function beginDraft(): void {
+        const live = snapshot();
+        draftValues = cloneValues(live);
+        draftOriginalValues = cloneValues(live);
+        draftDirty = false;
+        draftActive = true;
+        draftRevision++;
+    }
+
+    function draftValue(key: string): var {
+        // Reading the revision makes QML bindings re-evaluate after a draft
+        // value changes even though draftValues is a generic JS object.
+        const revision = draftRevision;
+        if (draftActive && draftValues[key] !== undefined)
+            return draftValues[key];
+        return root[key];
+    }
+
+    function updateDraftDirty(): void {
+        if (!draftActive) {
+            draftDirty = false;
+            return;
+        }
+
+        const keys = Object.keys(defaults);
+        for (const key of keys) {
+            if (draftValues[key] !== draftOriginalValues[key]) {
+                draftDirty = true;
+                return;
+            }
+        }
+        draftDirty = false;
+    }
+
+    function setDraftValue(key: string, value): void {
+        if (root[key] === undefined)
+            return;
+        if (!draftActive)
+            beginDraft();
+
+        // Keep display-name whitespace intact while the user is typing. The
+        // final value is normalized only when Apply commits the draft.
+        const nextValue = key === "userDisplayName" && typeof value === "string"
+            ? value.slice(0, 80)
+            : normalize(key, value);
+        if (draftValues[key] === nextValue)
+            return;
+
+        const next = cloneValues(draftValues);
+        next[key] = nextValue;
+        draftValues = next;
+        updateDraftDirty();
+        draftRevision++;
+    }
+
+    function resetDraftDefaults(): void {
+        if (!draftActive)
+            beginDraft();
+
+        const next = {};
+        const keys = Object.keys(defaults);
+        for (const key of keys)
+            next[key] = defaults[key];
+        draftValues = next;
+        updateDraftDirty();
+        draftRevision++;
+    }
+
+    function applyDraft(): void {
+        if (!draftActive || !draftDirty)
+            return;
+
+        loading = true;
+        apply(draftValues);
+        loading = false;
+        save();
+
+        const live = snapshot();
+        draftValues = cloneValues(live);
+        draftOriginalValues = cloneValues(live);
+        draftDirty = false;
+        draftRevision++;
+    }
+
+    function discardDraft(): void {
+        draftActive = false;
+        draftValues = ({});
+        draftOriginalValues = ({});
+        draftDirty = false;
+        draftRevision++;
+    }
+
+    function draftEffectiveDisplayName(): string {
+        const name = String(draftValue("userDisplayName") || "").trim();
+        return name.length > 0 ? name : systemUserName;
+    }
+
+    function draftProfilePictureSource(): string {
+        return resolveProfilePicture(String(draftValue("profilePicture") || ""));
+    }
+
     function clamp(value, minimum, maximum): real {
         return Math.max(minimum, Math.min(maximum, Number(value)));
     }
@@ -221,6 +353,31 @@ Singleton {
 
     function validStyle(value): bool {
         return validChoice(value, ["off", "fade", "spatial", "spring"]);
+    }
+
+    function expandUserPath(pathValue: string): string {
+        let path = (pathValue || "").trim();
+        if (path === "~")
+            return homeDirectory;
+        if (path.startsWith("~/"))
+            return homeDirectory + path.slice(1);
+        return path.split("${HOME}").join(homeDirectory)
+            .split("$HOME").join(homeDirectory);
+    }
+
+    function localFileUrl(pathValue: string): string {
+        return "file://" + encodeURI(pathValue);
+    }
+
+    function resolveProfilePicture(pathValue: string): string {
+        const raw = (pathValue || "").trim();
+        if (raw.startsWith("file:") || raw.startsWith("qrc:")
+                || raw.startsWith("image:"))
+            return raw;
+
+        const path = raw.length > 0 ? expandUserPath(raw)
+            : homeDirectory + "/.face";
+        return localFileUrl(path);
     }
 
     function normalize(key: string, value): var {
@@ -275,6 +432,12 @@ Singleton {
         case "wallpaperDirectory":
             return typeof value === "string" && value.trim().length > 0
                 ? value.trim() : defaults.wallpaperDirectory;
+        case "userDisplayName":
+            return typeof value === "string"
+                ? value.trim().slice(0, 80) : defaults.userDisplayName;
+        case "profilePicture":
+            return typeof value === "string"
+                ? value.trim() : defaults.profilePicture;
         case "manualAccentColor":
             return validChoice(value, [
                 "#89b4fa", "#f38ba8", "#fab387", "#a6e3a1",

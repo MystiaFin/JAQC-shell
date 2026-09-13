@@ -11,6 +11,7 @@ Item {
     readonly property var actions: [
         { label: "Shutdown", icon: Icons.power,
             command: ["systemctl", "poweroff"], danger: true },
+        { label: "Lock", icon: Icons.lock, action: "lock", danger: false },
         { label: "Restart", icon: Icons.restart,
             command: ["systemctl", "reboot"], danger: false },
         { label: "Sleep", icon: Icons.sleep,
@@ -136,8 +137,12 @@ Item {
 
                 TapHandler {
                     onTapped: {
-                        actionProcess.command = actionButton.modelData.command;
                         OverlayState.hidePowerMenu();
+                        if (actionButton.modelData.action === "lock") {
+                            LockState.lock();
+                            return;
+                        }
+                        actionProcess.command = actionButton.modelData.command;
                         actionProcess.running = true;
                     }
                 }
