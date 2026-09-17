@@ -110,7 +110,8 @@ PanelWindow {
 
         Item {
             id: statusContent
-            property real introOffset: 0
+            property real introOffset: root.bottomPosition
+                ? root.fullHeight : -root.fullHeight
             width: parent.width
             height: root.fullHeight
             y: (parent.height - height) / 2 + introOffset

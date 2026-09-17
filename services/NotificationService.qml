@@ -66,6 +66,28 @@ Singleton {
         }
     }
 
+    function invokeAction(notificationId: int, actionIdentifier: string): void {
+        for (let index = 0; index < notificationListModel.count; index++) {
+            const record = notificationListModel.get(index);
+            if (record.notificationId !== notificationId || !record.notification)
+                continue;
+
+            const notification = record.notification;
+            for (const action of notification.actions) {
+                if (action.identifier !== actionIdentifier)
+                    continue;
+
+                const resident = notification.resident;
+                action.invoke();
+                if (resident)
+                    removePopupById(notificationId);
+                else
+                    removeById(notificationId);
+                return;
+            }
+        }
+    }
+
     function clear(): void {
         const tracked = [];
         for (let index = 0; index < notificationListModel.count; index++)

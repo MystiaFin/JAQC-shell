@@ -97,9 +97,12 @@ Item {
                     body: delegateRoot.body
                     iconSource: delegateRoot.icon
                     receivedAt: delegateRoot.receivedAt
+                    notification: delegateRoot.notification
                     popup: false
                     onCloseRequested: notificationId =>
                         NotificationService.dismissById(notificationId)
+                    onActionRequested: (notificationId, actionIdentifier) =>
+                        NotificationService.invokeAction(notificationId, actionIdentifier)
                 }
             }
 

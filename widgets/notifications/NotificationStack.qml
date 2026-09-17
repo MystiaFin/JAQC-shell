@@ -48,6 +48,7 @@ Item {
         delegate: Item {
             id: delegateRoot
 
+            required property var notification
             required property int notificationId
             required property string appName
             required property string summary
@@ -69,9 +70,12 @@ Item {
                 body: delegateRoot.body
                 iconSource: delegateRoot.icon
                 receivedAt: delegateRoot.receivedAt
+                notification: delegateRoot.notification
                 popup: true
                 onCloseRequested: notificationId =>
                     NotificationService.removePopupById(notificationId)
+                onActionRequested: (notificationId, actionIdentifier) =>
+                    NotificationService.invokeAction(notificationId, actionIdentifier)
             }
         }
     }
