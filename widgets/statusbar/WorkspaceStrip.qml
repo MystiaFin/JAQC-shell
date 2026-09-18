@@ -44,12 +44,12 @@ Item {
         width: root.itemWidth
         height: 26
         radius: height / 2
-        color: Theme.accentHoverColor
+        color: Theme.statusAccentColor
 
         Text {
             anchors.centerIn: parent
             text: Icons.activeWorkspace
-            color: Theme.accentTextColor
+            color: Theme.statusAccentTextColor
             font.family: Typography.symbolIconFontFamily
             font.pixelSize: 18
             rotation: root.starRotation

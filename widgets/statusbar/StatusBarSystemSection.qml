@@ -31,7 +31,7 @@ Item {
             width: visible ? trayIcons.width + 20 : 0
             height: 26
             radius: height / 2
-            color: Theme.accentColor
+            color: Theme.statusAccentColor
 
             HoverHandler { cursorShape: Qt.PointingHandCursor }
             TapHandler { onTapped: OverlayState.toggleUtilityCenter() }
@@ -48,7 +48,7 @@ Item {
                         required property string modelData
                         height: 26
                         text: modelData
-                        color: Theme.accentTextColor
+                        color: Theme.statusAccentTextColor
                         font.family: Typography.nerdIconFontFamily
                         font.pixelSize: 15
                         verticalAlignment: Text.AlignVCenter

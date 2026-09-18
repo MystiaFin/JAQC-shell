@@ -61,8 +61,15 @@ QtObject {
         }
     }
 
+    function linearChannel(channel: real): real {
+        return channel <= 0.04045 ? channel / 12.92
+            : Math.pow((channel + 0.055) / 1.055, 2.4);
+    }
+
     function luminance(colorValue: color): real {
-        return colorValue.r * 0.2126 + colorValue.g * 0.7152 + colorValue.b * 0.0722;
+        return linearChannel(colorValue.r) * 0.2126
+            + linearChannel(colorValue.g) * 0.7152
+            + linearChannel(colorValue.b) * 0.0722;
     }
 
     function averageLuminance(colors): real {
@@ -166,7 +173,7 @@ QtObject {
             accent: accent,
             accentHover: tone(accentSeed, light ? 0.34 : 0.78,
                 Math.max(0.48, saturation(accentSeed))),
-            onAccent: luminance(accent) > 0.56
+            onAccent: luminance(accent) > 0.179
                 ? tone(baseColor, 0.08, 0.12)
                 : tone(baseColor, 0.96, 0.08),
             success: semanticColor("#a6e3a1", accent, light),

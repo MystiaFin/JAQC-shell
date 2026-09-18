@@ -12,24 +12,24 @@ Item {
 
     signal toggleRequested
 
-    height: 96
+    height: ShellMetrics.scaled(96)
 
     Column {
         anchors {
             left: parent.left
             right: toggle.left
             verticalCenter: parent.verticalCenter
-            leftMargin: 20
-            rightMargin: 20
+            leftMargin: ShellMetrics.spaceExtraLarge
+            rightMargin: ShellMetrics.spaceExtraLarge
         }
-        spacing: 3
+        spacing: ShellMetrics.spaceExtraSmall
 
         Text {
             width: parent.width
             text: root.title
             color: Theme.primaryTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 16
+            font.pixelSize: Typography.titleMedium
             font.weight: Font.DemiBold
             elide: Text.ElideRight
         }
@@ -39,7 +39,7 @@ Item {
             text: root.detail
             color: Theme.mutedTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.bodySmall
             elide: Text.ElideRight
         }
     }
@@ -49,11 +49,11 @@ Item {
 
         anchors {
             right: parent.right
-            rightMargin: 20
+            rightMargin: ShellMetrics.spaceExtraLarge
             verticalCenter: parent.verticalCenter
         }
         checked: root.checked
-        scale: 1.05
+        accessibleName: root.title
         onToggled: root.toggleRequested()
     }
 

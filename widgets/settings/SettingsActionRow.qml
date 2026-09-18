@@ -11,17 +11,17 @@ Item {
     property bool showSeparator: false
     signal actionRequested
 
-    height: 96
+    height: ShellMetrics.scaled(96)
 
     Column {
-        anchors { left: parent.left; right: action.left; verticalCenter: parent.verticalCenter; leftMargin: 20; rightMargin: 20 }
-        spacing: 3
+        anchors { left: parent.left; right: action.left; verticalCenter: parent.verticalCenter; leftMargin: ShellMetrics.spaceExtraLarge; rightMargin: ShellMetrics.spaceExtraLarge }
+        spacing: ShellMetrics.spaceExtraSmall
         Text {
             width: parent.width
             text: root.title
             color: Theme.primaryTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 16
+            font.pixelSize: Typography.titleMedium
             font.weight: Font.DemiBold
             elide: Text.ElideRight
         }
@@ -30,14 +30,14 @@ Item {
             text: root.detail
             color: Theme.mutedTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.bodySmall
             elide: Text.ElideRight
         }
     }
 
     SettingsActionButton {
         id: action
-        anchors { right: parent.right; rightMargin: 20; verticalCenter: parent.verticalCenter }
+        anchors { right: parent.right; rightMargin: ShellMetrics.spaceExtraLarge; verticalCenter: parent.verticalCenter }
         label: root.actionLabel
         danger: root.danger
         onClicked: root.actionRequested()

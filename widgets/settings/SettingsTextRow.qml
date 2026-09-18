@@ -10,17 +10,17 @@ Item {
     property bool showSeparator: false
     signal valueRequested(string value)
 
-    height: 104
+    height: ShellMetrics.scaled(104)
 
     Column {
-        anchors { left: parent.left; right: editor.left; verticalCenter: parent.verticalCenter; leftMargin: 20; rightMargin: 20 }
-        spacing: 3
+        anchors { left: parent.left; right: editor.left; verticalCenter: parent.verticalCenter; leftMargin: ShellMetrics.spaceExtraLarge; rightMargin: ShellMetrics.spaceExtraLarge }
+        spacing: ShellMetrics.spaceExtraSmall
         Text {
             width: parent.width
             text: root.title
             color: Theme.primaryTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 16
+            font.pixelSize: Typography.titleMedium
             font.weight: Font.DemiBold
             elide: Text.ElideRight
         }
@@ -29,28 +29,30 @@ Item {
             text: root.detail
             color: Theme.mutedTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.bodySmall
             elide: Text.ElideRight
         }
     }
 
     Rectangle {
         id: editor
-        anchors { right: parent.right; rightMargin: 20; verticalCenter: parent.verticalCenter }
-        width: Math.min(280, root.width * 0.42)
-        height: 42
+        anchors { right: parent.right; rightMargin: ShellMetrics.spaceExtraLarge; verticalCenter: parent.verticalCenter }
+        width: Math.min(ShellMetrics.scaled(280), root.width * 0.42)
+        height: ShellMetrics.compactControlHeight
         radius: ShellMetrics.radiusMedium
-        color: Theme.selectedSurfaceColor
+        color: Theme.surfaceContainerHighColor
+        border.width: input.activeFocus ? 2 : 1
+        border.color: input.activeFocus ? Theme.accentColor : Theme.outlineVariantColor
 
         TextInput {
             id: input
-            anchors { fill: parent; leftMargin: 12; rightMargin: 12 }
+            anchors { fill: parent; leftMargin: ShellMetrics.spaceMedium; rightMargin: ShellMetrics.spaceMedium }
             text: root.value
             color: Theme.primaryTextColor
             selectionColor: Theme.accentColor
             selectedTextColor: Theme.accentTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.bodyMedium
             verticalAlignment: TextInput.AlignVCenter
             clip: true
             onTextEdited: root.valueRequested(text)

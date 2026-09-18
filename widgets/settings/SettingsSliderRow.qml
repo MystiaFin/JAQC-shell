@@ -1,4 +1,5 @@
 import QtQuick
+import "../../components/common"
 import "../../components/theme"
 
 Item {
@@ -27,17 +28,17 @@ Item {
         valueRequested(snapped(minimum + ratio * (maximum - minimum)));
     }
 
-    height: 104
+    height: ShellMetrics.scaled(104)
 
     Column {
-        anchors { left: parent.left; right: sliderWrap.left; verticalCenter: parent.verticalCenter; leftMargin: 20; rightMargin: 20 }
-        spacing: 3
+        anchors { left: parent.left; right: sliderWrap.left; verticalCenter: parent.verticalCenter; leftMargin: ShellMetrics.spaceExtraLarge; rightMargin: ShellMetrics.spaceExtraLarge }
+        spacing: ShellMetrics.spaceExtraSmall
         Text {
             width: parent.width
             text: root.title
             color: Theme.primaryTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 16
+            font.pixelSize: Typography.titleMedium
             font.weight: Font.DemiBold
             elide: Text.ElideRight
         }
@@ -46,25 +47,31 @@ Item {
             text: root.detail
             color: Theme.mutedTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.bodySmall
             elide: Text.ElideRight
         }
     }
 
     Row {
         id: sliderWrap
-        anchors { right: parent.right; rightMargin: 20; verticalCenter: parent.verticalCenter }
-        spacing: 8
+        anchors { right: parent.right; rightMargin: ShellMetrics.spaceExtraLarge; verticalCenter: parent.verticalCenter }
+        spacing: ShellMetrics.spaceSmall
 
         Item {
             id: slider
-            width: 170
-            height: 34
+            width: ShellMetrics.scaled(170)
+            height: ShellMetrics.compactControlHeight
+            activeFocusOnTab: true
+            Accessible.role: Accessible.Slider
+            Accessible.name: root.title
+
+            Keys.onLeftPressed: root.valueRequested(root.snapped(root.value - root.step))
+            Keys.onRightPressed: root.valueRequested(root.snapped(root.value + root.step))
 
             Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width
-                height: 5
+                height: ShellMetrics.scaled(4)
                 radius: height / 2
                 color: Theme.surfaceBorderColor
 
@@ -82,13 +89,17 @@ Item {
                     (parent.width - width) * ((root.value - root.minimum)
                         / (root.maximum - root.minimum))))
                 anchors.verticalCenter: parent.verticalCenter
-                width: 16
-                height: 16
+                width: sliderMouse.pressed || slider.activeFocus
+                    ? ShellMetrics.scaled(20) : ShellMetrics.scaled(16)
+                height: width
                 radius: width / 2
-                color: Theme.primaryTextColor
+                color: Theme.accentColor
+
+                Behavior on width { MotionAnimation { type: MotionAnimation.FastEffects } }
             }
 
             MouseArea {
+                id: sliderMouse
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 onPressed: mouse => root.setFromX(mouse.x)
@@ -101,11 +112,11 @@ Item {
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
-            width: 64
+            width: ShellMetrics.scaled(64)
             text: Number(root.value).toFixed(root.decimals) + root.suffix
             color: Theme.secondaryTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.labelMedium
             horizontalAlignment: Text.AlignRight
         }
     }

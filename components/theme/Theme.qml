@@ -29,6 +29,35 @@ Singleton {
             Math.max(0, Math.min(1, opacityValue)));
     }
 
+    function mix(first: color, second: color, amount: real): color {
+        return Qt.rgba(
+            first.r + (second.r - first.r) * amount,
+            first.g + (second.g - first.g) * amount,
+            first.b + (second.b - first.b) * amount,
+            first.a + (second.a - first.a) * amount
+        );
+    }
+
+    function linearChannel(channel: real): real {
+        return channel <= 0.04045 ? channel / 12.92
+            : Math.pow((channel + 0.055) / 1.055, 2.4);
+    }
+
+    function luminance(colorValue: color): real {
+        return linearChannel(colorValue.r) * 0.2126
+            + linearChannel(colorValue.g) * 0.7152
+            + linearChannel(colorValue.b) * 0.0722;
+    }
+
+    function contrastText(background: color): color {
+        const dark = "#171218";
+        const light = "#fff8fb";
+        const backgroundLuminance = luminance(background);
+        const darkRatio = (backgroundLuminance + 0.05) / (luminance(dark) + 0.05);
+        const lightRatio = (luminance(light) + 0.05) / (backgroundLuminance + 0.05);
+        return darkRatio >= lightRatio ? dark : light;
+    }
+
     readonly property bool dynamicActive: currentTheme === "dynamic"
     readonly property QtObject activeTheme: dynamicActive
         ? dynamic : currentTheme === "gruvbox" ? gruvbox : catppuccin
@@ -53,8 +82,28 @@ Singleton {
     readonly property color accentColor: activeTheme.accentColor
     readonly property color accentHoverColor: activeTheme.accentHoverColor
     readonly property color accentTextColor: activeTheme.accentTextColor
+    readonly property color statusAccentColor: lightMode
+        ? mix(accentColor, "#000000", 0.22) : accentColor
+    readonly property color statusAccentTextColor: "#fff8fb"
     readonly property color successColor: activeTheme.successColor
     readonly property color dangerColor: activeTheme.dangerColor
+    readonly property color dangerTextColor: contrastText(dangerColor)
+
+    // Material-inspired tonal surface hierarchy. Existing aliases above remain
+    // available while components migrate to explicit semantic roles.
+    readonly property color surfaceColor: panelSurfaceColor
+    readonly property color surfaceContainerLowColor: mix(
+        activeTheme.foregroundColor, activeTheme.searchBackgroundColor, 0.55)
+    readonly property color surfaceContainerColor: activeTheme.searchBackgroundColor
+    readonly property color surfaceContainerHighColor: mix(
+        activeTheme.searchBackgroundColor, activeTheme.textColor, lightMode ? 0.08 : 0.06)
+    readonly property color surfaceTextColor: primaryTextColor
+    readonly property color surfaceVariantTextColor: secondaryTextColor
+    readonly property color outlineColor: surfaceBorderColor
+    readonly property color outlineVariantColor: withOpacity(surfaceBorderColor, 0.62)
+    readonly property color primaryContainerColor: selectedSurfaceColor
+    readonly property color primaryContainerTextColor: accentColor
+    readonly property color scrimColor: "#99000000"
     readonly property bool lightMode: dynamicActive && dynamic.lightMode
 
     function toggleColorMode(): void {

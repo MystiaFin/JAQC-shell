@@ -1,4 +1,5 @@
 import QtQuick
+import "../../components/common"
 import "../../components/theme"
 
 Item {
@@ -12,9 +13,9 @@ Item {
     property bool expanded: false
     signal valueRequested(string value)
 
-    readonly property real closedHeight: 96
-    readonly property real optionHeight: 38
-    readonly property real menuPadding: 5
+    readonly property real closedHeight: ShellMetrics.scaled(96)
+    readonly property real optionHeight: ShellMetrics.compactControlHeight
+    readonly property real menuPadding: ShellMetrics.spaceExtraSmall
 
     function optionIndex(): int {
         for (let index = 0; index < options.length; index++) {
@@ -51,17 +52,17 @@ Item {
             left: parent.left
             right: selector.left
             verticalCenter: parent.verticalCenter
-            leftMargin: 20
-            rightMargin: 20
+            leftMargin: ShellMetrics.spaceExtraLarge
+            rightMargin: ShellMetrics.spaceExtraLarge
         }
-        spacing: 3
+        spacing: ShellMetrics.spaceExtraSmall
 
         Text {
             width: parent.width
             text: root.title
             color: Theme.primaryTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 16
+            font.pixelSize: Typography.titleMedium
             font.weight: Font.DemiBold
             elide: Text.ElideRight
         }
@@ -71,7 +72,7 @@ Item {
             text: root.detail
             color: Theme.mutedTextColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.bodySmall
             elide: Text.ElideRight
         }
     }
@@ -81,26 +82,42 @@ Item {
 
         anchors {
             right: parent.right
-            rightMargin: 20
+            rightMargin: ShellMetrics.spaceExtraLarge
             verticalCenter: parent.verticalCenter
         }
-        width: 164
-        height: 42
+        width: ShellMetrics.scaled(164)
+        height: ShellMetrics.compactControlHeight
         radius: ShellMetrics.radiusMedium
-        color: Theme.selectedSurfaceColor
+        color: Theme.surfaceContainerHighColor
+        border.width: root.expanded || activeFocus ? 2 : 1
+        border.color: root.expanded || activeFocus
+            ? Theme.accentColor : Theme.outlineVariantColor
+        activeFocusOnTab: true
+        Accessible.role: Accessible.ComboBox
+        Accessible.name: root.title
+        Accessible.description: root.detail
+
+        StateLayer {
+            anchors.fill: parent
+            radius: parent.radius
+            hovered: selectorHover.hovered
+            pressed: selectorTap.pressed
+            focused: selector.activeFocus
+            stateColor: Theme.surfaceTextColor
+        }
 
         Text {
             anchors {
                 left: parent.left
                 right: chevron.left
                 verticalCenter: parent.verticalCenter
-                leftMargin: 14
-                rightMargin: 8
+                leftMargin: ShellMetrics.spaceLarge
+                rightMargin: ShellMetrics.spaceSmall
             }
             text: root.optionLabel()
             color: Theme.accentColor
             font.family: Typography.bodyFontFamily
-            font.pixelSize: 12
+            font.pixelSize: Typography.labelLarge
             font.weight: Font.DemiBold
             elide: Text.ElideRight
         }
@@ -109,17 +126,26 @@ Item {
             id: chevron
             anchors {
                 right: parent.right
-                rightMargin: 12
+                rightMargin: ShellMetrics.spaceMedium
                 verticalCenter: parent.verticalCenter
             }
             text: root.expanded ? "󰅃" : "󰅀"
             color: Theme.secondaryTextColor
             font.family: Typography.nerdIconFontFamily
-            font.pixelSize: 14
+            font.pixelSize: Typography.titleSmall
         }
 
-        HoverHandler { cursorShape: Qt.PointingHandCursor }
-        TapHandler { onTapped: root.expanded = !root.expanded }
+        HoverHandler {
+            id: selectorHover
+            cursorShape: Qt.PointingHandCursor
+        }
+        TapHandler {
+            id: selectorTap
+            onTapped: root.expanded = !root.expanded
+        }
+        Keys.onSpacePressed: root.expanded = !root.expanded
+        Keys.onReturnPressed: root.expanded = !root.expanded
+        Keys.onEscapePressed: root.expanded = false
     }
 
     Rectangle {
@@ -129,12 +155,12 @@ Item {
         // disable all pointer handling as soon as the dropdown is closed.
         visible: root.expanded || opacity > 0.01
         enabled: root.expanded
-        x: root.width - 20 - width
-        y: selector.y + selector.height + 6
+        x: root.width - ShellMetrics.spaceExtraLarge - width
+        y: selector.y + selector.height + ShellMetrics.spaceSmall
         width: selector.width
         height: optionsColumn.height + root.menuPadding * 2
         radius: ShellMetrics.radiusMedium
-        color: Theme.panelSurfaceColor
+        color: Theme.surfaceContainerHighColor
         border.width: 1
         border.color: Theme.surfaceBorderColor
         opacity: root.expanded ? 1 : 0
@@ -143,10 +169,10 @@ Item {
         z: 200
 
         Behavior on opacity {
-            NumberAnimation { duration: 110; easing.type: Easing.OutCubic }
+            MotionAnimation { type: MotionAnimation.FastEffects }
         }
         Behavior on scale {
-            NumberAnimation { duration: 110; easing.type: Easing.OutCubic }
+            MotionAnimation { type: MotionAnimation.FastEffects }
         }
 
         Column {
@@ -193,7 +219,7 @@ Item {
                             ? Theme.accentColor
                             : Theme.primaryTextColor
                         font.family: Typography.bodyFontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: Typography.labelLarge
                         font.weight: optionItem.selected
                             ? Font.DemiBold
                             : Font.Normal
