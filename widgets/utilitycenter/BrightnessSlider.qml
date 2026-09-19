@@ -1,4 +1,5 @@
 import QtQuick
+import "../../components/common"
 import "../../components/theme"
 import "../../services"
 
@@ -50,7 +51,7 @@ Rectangle {
             rightMargin: 12
             verticalCenter: parent.verticalCenter
         }
-        height: 8
+        height: 6
         radius: height / 2
         color: Theme.surfaceBorderColor
 
@@ -62,12 +63,17 @@ Rectangle {
         }
 
         Rectangle {
-            x: root.displayValue * (parent.width - width)
+            x: Math.max(0, Math.min(parent.width - width,
+                root.displayValue * parent.width - width / 2))
             anchors.verticalCenter: parent.verticalCenter
-            width: 18
-            height: 18
+            width: 4
+            height: root.dragging ? 24 : 20
             radius: width / 2
-            color: Theme.primaryTextColor
+            color: Theme.accentColor
+
+            Behavior on height {
+                MotionAnimation { type: MotionAnimation.FastSpatial }
+            }
         }
     }
 

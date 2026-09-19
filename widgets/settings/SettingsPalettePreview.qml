@@ -62,8 +62,6 @@ Rectangle {
                     height: 44
                     radius: ShellMetrics.radiusSmall
                     color: modelData
-                    border.width: 1
-                    border.color: Theme.surfaceBorderColor
                 }
             }
         }

@@ -89,9 +89,8 @@ Item {
         height: ShellMetrics.compactControlHeight
         radius: ShellMetrics.radiusMedium
         color: Theme.surfaceContainerHighColor
-        border.width: root.expanded || activeFocus ? 2 : 1
-        border.color: root.expanded || activeFocus
-            ? Theme.accentColor : Theme.outlineVariantColor
+        border.width: root.expanded || activeFocus ? 2 : 0
+        border.color: Theme.accentColor
         activeFocusOnTab: true
         Accessible.role: Accessible.ComboBox
         Accessible.name: root.title
@@ -161,8 +160,6 @@ Item {
         height: optionsColumn.height + root.menuPadding * 2
         radius: ShellMetrics.radiusMedium
         color: Theme.surfaceContainerHighColor
-        border.width: 1
-        border.color: Theme.surfaceBorderColor
         opacity: root.expanded ? 1 : 0
         scale: root.expanded ? 1 : 0.97
         transformOrigin: Item.TopRight

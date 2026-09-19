@@ -45,8 +45,6 @@ Item {
                 radius: ShellMetrics.radiusMedium
                 color: modeHover.hovered
                     ? Theme.accentColor : Theme.selectedSurfaceColor
-                border.width: 1
-                border.color: Theme.accentColor
 
                 Behavior on color {
                     MotionColorAnimation { type: MotionAnimation.FastEffects }

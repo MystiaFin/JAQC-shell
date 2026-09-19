@@ -84,7 +84,7 @@ Singleton {
     readonly property color accentTextColor: activeTheme.accentTextColor
     readonly property color statusAccentColor: lightMode
         ? mix(accentColor, "#000000", 0.22) : accentColor
-    readonly property color statusAccentTextColor: "#fff8fb"
+    readonly property color statusAccentTextColor: contrastText(statusAccentColor)
     readonly property color successColor: activeTheme.successColor
     readonly property color dangerColor: activeTheme.dangerColor
     readonly property color dangerTextColor: contrastText(dangerColor)

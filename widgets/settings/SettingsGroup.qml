@@ -21,8 +21,6 @@ Rectangle {
     z: hasExpandedMenu ? 50 : 0
     radius: ShellMetrics.radiusExtraLarge
     color: Theme.surfaceContainerColor
-    border.width: 1
-    border.color: Theme.outlineVariantColor
     clip: false
 
     Column {

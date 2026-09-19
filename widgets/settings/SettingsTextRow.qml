@@ -41,8 +41,8 @@ Item {
         height: ShellMetrics.compactControlHeight
         radius: ShellMetrics.radiusMedium
         color: Theme.surfaceContainerHighColor
-        border.width: input.activeFocus ? 2 : 1
-        border.color: input.activeFocus ? Theme.accentColor : Theme.outlineVariantColor
+        border.width: input.activeFocus ? 2 : 0
+        border.color: Theme.accentColor
 
         TextInput {
             id: input

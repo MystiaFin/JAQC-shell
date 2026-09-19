@@ -7,11 +7,14 @@ Rectangle {
 
     required property string icon
     property bool primaryAction: false
+    property bool active: false
     signal clicked()
 
-    implicitWidth: primaryAction ? 44 : 38
-    implicitHeight: primaryAction ? 44 : 38
-    radius: height / 2
+    implicitWidth: primaryAction ? 48 : 38
+    implicitHeight: primaryAction ? 48 : 38
+    radius: primaryAction && active
+        ? (buttonTap.pressed ? ShellMetrics.radiusSmall : ShellMetrics.radiusMedium)
+        : height / 2
     color: primaryAction
         ? Theme.accentColor
         : buttonHover.hovered
@@ -21,6 +24,10 @@ Rectangle {
 
     Behavior on opacity {
         MotionAnimation { type: MotionAnimation.DefaultEffects }
+    }
+
+    Behavior on radius {
+        MotionAnimation { type: MotionAnimation.FastSpatial }
     }
 
     Text {
@@ -38,5 +45,8 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
     }
 
-    TapHandler { onTapped: mediaControlButton.clicked() }
+    TapHandler {
+        id: buttonTap
+        onTapped: mediaControlButton.clicked()
+    }
 }

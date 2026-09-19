@@ -111,9 +111,7 @@ Item {
             Column {
                 anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - 104
-                spacing: 0
                 Text { text: "Settings"; color: Theme.primaryTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 21; font.weight: Font.Bold }
-                Text { text: "Quickshell"; color: Theme.mutedTextColor; font.family: Typography.bodyFontFamily; font.pixelSize: 10 }
             }
 
             Rectangle {

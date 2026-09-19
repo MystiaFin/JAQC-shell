@@ -178,27 +178,13 @@ Rectangle {
                     font.pixelSize: 10
                 }
 
-                Rectangle {
+                WavyProgressBar {
                     Layout.fillWidth: true
-                    height: 5
-                    radius: height / 2
-                    color: Theme.surfaceBorderColor
-
-                    Rectangle {
-                        width: MediaService.durationSeconds > 0
-                            ? Math.min(parent.width, MediaService.positionSeconds
-                                / MediaService.durationSeconds * parent.width)
-                            : 0
-                        height: parent.height
-                        radius: parent.radius
-                        color: Theme.accentColor
-
-                        Behavior on width {
-                            SmoothedAnimation {
-                                velocity: ShellMetrics.continuousMotionVelocity
-                            }
-                        }
-                    }
+                    Layout.preferredHeight: 10
+                    progress: MediaService.durationSeconds > 0
+                        ? MediaService.positionSeconds / MediaService.durationSeconds
+                        : 0
+                    animated: MediaService.playing
                 }
 
                 Text {
@@ -226,6 +212,7 @@ Rectangle {
                 MediaControlButton {
                     enabled: MediaService.canTogglePlaying
                     primaryAction: true
+                    active: MediaService.playing
                     icon: MediaService.playing ? Icons.pause : Icons.play
                     onClicked: MediaService.playPause()
                 }
