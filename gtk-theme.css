@@ -118,6 +118,12 @@ row:selected {
   color: @ON_ACCENT@;
 }
 
+rubberband,
+.rubberband {
+  background-color: alpha(@accent_color, 0.18);
+  border: 1px solid @accent_color;
+}
+
 row,
 list row,
 flowboxchild {
