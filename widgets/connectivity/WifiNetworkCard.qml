@@ -28,8 +28,6 @@ Rectangle {
         return network.known ? "Saved" : "Available";
     }
     readonly property string actionIcon: {
-        if (network.connected)
-            return Icons.close;
         return network.known ? Icons.confirm : Icons.lock;
     }
 
@@ -87,10 +85,52 @@ Rectangle {
             }
 
             Text {
+                visible: !root.network.connected
                 text: root.actionIcon
-                color: root.network.connected ? Theme.dangerColor : Theme.mutedTextColor
+                color: Theme.mutedTextColor
                 font.family: Typography.nerdIconFontFamily
                 font.pixelSize: 14
+            }
+
+            Rectangle {
+                id: disconnectButton
+
+                visible: root.network.connected
+                Layout.preferredWidth: 32
+                Layout.preferredHeight: 32
+                radius: disconnectTap.pressed
+                    ? ShellMetrics.radiusSmall : height / 2
+                color: disconnectHover.hovered
+                    ? Theme.dangerColor : "transparent"
+                opacity: root.network.stateChanging ? 0.4 : 1
+                z: 2
+
+                Behavior on radius {
+                    MotionAnimation { type: MotionAnimation.FastSpatial }
+                }
+                Behavior on color {
+                    MotionColorAnimation { type: MotionAnimation.FastEffects }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: Icons.wifiOff
+                    color: disconnectHover.hovered
+                        ? Theme.dangerTextColor : Theme.dangerColor
+                    font.family: Typography.nerdIconFontFamily
+                    font.pixelSize: 16
+                }
+
+                HoverHandler {
+                    id: disconnectHover
+                    enabled: !root.network.stateChanging
+                    cursorShape: Qt.PointingHandCursor
+                }
+                TapHandler {
+                    id: disconnectTap
+                    enabled: !root.network.stateChanging
+                    onTapped: root.network.disconnect()
+                }
             }
         }
 
@@ -212,13 +252,15 @@ Rectangle {
             top: parent.top
             right: parent.right
             left: parent.left
+            rightMargin: root.network.connected ? 50 : 0
         }
         height: 50
-        cursorShape: Qt.PointingHandCursor
+        cursorShape: root.network.connected
+            ? Qt.ArrowCursor : Qt.PointingHandCursor
         onClicked: {
-            if (root.network.connected) {
-                root.network.disconnect();
-            } else if (root.network.known
+            if (root.network.connected)
+                return;
+            if (root.network.known
                     || root.network.security === WifiSecurityType.None) {
                 root.network.connect();
                 root.passwordEditorClosed();

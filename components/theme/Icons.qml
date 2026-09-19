@@ -7,6 +7,7 @@ Singleton {
     readonly property string nixos: "󱄅"
     readonly property string notifications: "󰂚"
     readonly property string wifi: "󰖩"
+    readonly property string wifiOff: "󰖪"
     readonly property string bluetooth: "󰂯"
     readonly property string wallpaper: "󰸉"
     readonly property string brightness: "󰃠"
