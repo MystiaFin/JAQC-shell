@@ -16,6 +16,7 @@ Rectangle {
         { key: "wallpaper", label: "Wallpaper", icon: Icons.wallpaper },
         { key: "bar", label: "Status bar", icon: "󰍜" },
         { key: "behavior", label: "Behavior", icon: "󰒓" },
+        { key: "session", label: "Session", icon: "󰌾" },
         { key: "widgets", label: "Floating widgets", icon: "󰖲" },
         { key: "animations", label: "Animations", icon: "󰔎" },
         { key: "integrations", label: "Integrations", icon: "󰌹" },

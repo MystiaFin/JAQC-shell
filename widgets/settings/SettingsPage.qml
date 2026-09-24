@@ -24,6 +24,7 @@ Item {
         wallpaper: { title: "Wallpaper", description: "Choose the source directory, transitions, shuffle, and palette behavior." },
         bar: { title: "Status bar", description: "Control placement, modules, clock formatting, and workspace presentation." },
         behavior: { title: "Behavior", description: "Change dismissal rules, launcher behavior, and global motion preferences." },
+        session: { title: "Session", description: "Configure automatic lock and suspend after periods of inactivity." },
         widgets: { title: "Floating widgets", description: "Control desktop-only visibility, placement, scale, opacity, and cards." },
         animations: { title: "Animations", description: "Tune motion style and duration for each part of the shell." },
         integrations: { title: "Integrations", description: "Keep supported applications in sync with the current shell palette." },
@@ -43,6 +44,7 @@ Item {
         case "wallpaper": return Qt.resolvedUrl("pages/WallpaperSettings.qml");
         case "bar": return Qt.resolvedUrl("pages/BarSettings.qml");
         case "behavior": return Qt.resolvedUrl("pages/BehaviorSettings.qml");
+        case "session": return Qt.resolvedUrl("pages/SessionSettings.qml");
         case "widgets": return Qt.resolvedUrl("pages/FloatingWidgetsSettings.qml");
         case "animations": return Qt.resolvedUrl("pages/AnimationsSettings.qml");
         case "integrations": return Qt.resolvedUrl("pages/IntegrationsSettings.qml");

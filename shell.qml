@@ -8,7 +8,10 @@ import "services"
 import "widgets/statusbar"
 
 ShellRoot {
-    Component.onCompleted: ThemeExportService.initialize()
+    Component.onCompleted: {
+        ThemeExportService.initialize();
+        IdleService.available;
+    }
 
     Binding {
         target: NetworkService

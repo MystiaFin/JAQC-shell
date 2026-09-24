@@ -74,6 +74,12 @@ Singleton {
         globalAnimationSpeed: 1.0,
         reduceMotion: false,
 
+        // Session idle timeouts
+        idleLockEnabled: true,
+        idleLockMinutes: 5,
+        idleSleepEnabled: true,
+        idleSleepMinutes: 10,
+
         // Floating widgets
         floatingWidgetVisibilityMode: "desktop",
         floatingWidgetScale: 1.0,
@@ -180,6 +186,12 @@ Singleton {
     property bool clickOutsideDismiss: defaults.clickOutsideDismiss
     property real globalAnimationSpeed: defaults.globalAnimationSpeed
     property bool reduceMotion: defaults.reduceMotion
+
+    // Session idle timeouts
+    property bool idleLockEnabled: defaults.idleLockEnabled
+    property int idleLockMinutes: defaults.idleLockMinutes
+    property bool idleSleepEnabled: defaults.idleSleepEnabled
+    property int idleSleepMinutes: defaults.idleSleepMinutes
 
     // Floating widgets
     property string floatingWidgetVisibilityMode: defaults.floatingWidgetVisibilityMode
@@ -391,6 +403,8 @@ Singleton {
         case "launcherWidth": return Math.round(clamp(value, 420, 900));
         case "launcherVisibleRows": return Math.round(clamp(value, 3, 14));
         case "wallpaperShuffleMinutes": return Math.round(clamp(value, 1, 1440));
+        case "idleLockMinutes": return Math.round(clamp(value, 1, 240));
+        case "idleSleepMinutes": return Math.round(clamp(value, 1, 240));
         case "statusBarHeight": return Math.round(clamp(value, 32, 64));
         case "globalAnimationSpeed": return clamp(value, 0.50, 2.0);
         case "floatingWidgetScale": return clamp(value, 0.70, 1.35);
